@@ -4,8 +4,7 @@
       [%deposit =json]
   ==
 +$  outbox
-  $:  num=@ud :: monotonic
-      daps=(set term)
+  $:  daps=(set term)
       msgs=(list [@ud json])
   ==
 --
