@@ -1,6 +1,6 @@
 |%
 +$  outbox-action
-  $:  [%bind =path]
+  $%  [%bind =path]
       [%deposit =json]
   ==
 +$  outbox

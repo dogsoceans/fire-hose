@@ -57,21 +57,20 @@
   ++  outbox-act
     |=  [=bowl:gall act=outbox-action]
     ^-  (quip card _this)
-    `this
-    :: ?+    -.act  `this
-    ::     %bind
-    ::   :_  this
-    ::   [%pass /connect %arvo %e %connect `path.act dap.bowl]~
-    :: ::
-    ::     %deposit
-    ::   =.  outboxes
-    ::     %-  ~(urn by outboxes)
-    ::     |=  [id=@ta =outbox]
-    ::     ?.  (~(has in daps.outbox) dap.bowl)  outbox
-    ::     =/  old-num  -.i.msgs.outbox
-    ::     [daps.outbox [[+(old-num) json.act] msgs.outbox]]
-    ::   `this
-    :: ==
+    ?-    -.act
+        %bind
+      :_  this
+      [%pass /connect %arvo %e %connect `path.act dap.bowl]~
+    ::
+        %deposit
+      =.  outboxes
+        %-  ~(urn by outboxes)
+        |=  [id=@ta =outbox]
+        ?.  (~(has in daps.outbox) dap.bowl)  outbox
+        =/  index  ?~(msgs.outbox 0 +(-.i.msgs.outbox))
+        [daps.outbox [[index json.act] msgs.outbox]]
+      `this
+    ==
   ::
   ++  outbox-req
     |=  [=bowl:gall rid=@tas req=inbound-request:eyre]
