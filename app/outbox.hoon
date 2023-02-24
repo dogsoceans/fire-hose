@@ -4,7 +4,7 @@
 ::  from the frontend. Use with <<NPM PACKAGE>>
 ::
 /-  *outbox
-/+  default-agent, dbug, verb
+/+  default-agent, dbug, verb, ob=outbox
 |%
 +$  versioned-state
   $%  state-0
@@ -27,7 +27,11 @@
 +*  this  .
     def   ~(. (default-agent this %|) bowl)
 ::
-++  on-init  on-init:def
+++  on-init
+  ^-  (quip card _this)
+  :_  this
+  [%pass /bind %arvo %e %connect `/~/outbox dap.bowl]~
+::
 ++  on-save  !>(state)
 ::
 ++  on-load
@@ -58,15 +62,11 @@
     |=  [=bowl:gall act=outbox-action]
     ^-  (quip card _this)
     ?-    -.act
-        %bind
-      :_  this
-      [%pass /bind %arvo %e %connect `path.act dap.bowl]~
-    ::
         %deposit
       =.  outboxes
         %-  ~(urn by outboxes)
         |=  [id=@ta =outbox]
-        ?.  (~(has in daps.outbox) dap.bowl)  outbox
+        ?.  (~(has in daps.outbox) dap.act)  outbox :: TODO need to write app source into bowl:gall, this is a security flaw right now
         =/  index  ?~(msgs.outbox 0 +(-.i.msgs.outbox))
         [daps.outbox [[index json.act] msgs.outbox]]
       `this
@@ -98,32 +98,28 @@
         ?~  msgs.cob                    (flop new)
         ?:  =(message-id -.i.msgs.cob)  (flop new)
         $(msgs.cob t.msgs.cob, new [i.msgs.cob new])
-      =/  data=(unit octs)
-        %-  some
-        %-  as-octs:mimes:html
-        %-  crip
-        %-  en-json:html
-        a+(turn msgs.cob |=([id=@ud =json] json))
-      :_  this :: TODO need to delete a bunch of stuff
-      :~  [%give %fact paths %http-response-header !>(head)]
-          [%give %fact paths %http-response-data !>(data)]
-          [%give %kick paths ~]
-      ==
+      ::
+      :_  this
+      %^  make-http-response-facts:ob  paths  head
+      %-  some
+      %-  as-octs:mimes:html
+      %-  crip
+      %-  en-json:html
+      a+(turn msgs.cob |=([id=@ud =json] json))
     ::
-        %'POST' :: TODO this doesn't work????? need to try from a browser or smth 
-      =*  id=@ta  (crip (en-json:html s+(rear (rash url.request.req stap)))) :: TODO this is kind of retarded
-      =/  connection-id=(unit octs)  `(as-octs:mimes:html id)
-      =/  daps=(set term)  (silt (limo ~['test' 'asdf' 'fdsa'])) :: TODO implement for real
-      :_  this(outboxes (~(put by outboxes) id [daps ~]))
-      :~  [%give %fact paths %http-response-header !>(head)]
-          [%give %fact paths %http-response-data !>(connection-id)]
-          [%give %kick paths ~]
-      ==
+      :: TODO once I rewrite http-api we can use this instead of poking with marks etc
+      ::   %'POST'
+      :: =*  id=@ta  (crip (en-json:html s+(rear (rash url.request.req stap)))) :: TODO this is kind of retarded
+      :: =/  connection-id=(unit octs)  `(as-octs:mimes:html id)
+      :: =/  daps=(set term)  (silt (limo ~['test' 'asdf' 'fdsa'])) :: TODO implement for real
+      :: :_  this(outboxes (~(put by outboxes) id [daps ~]))
+      :: (make-http-response-facts:ob paths head connection-id)
     ==
   --
 ++  on-agent  on-agent:def
 ::
 ++  on-arvo
+  :: TODO need to write logic that cancels timers.
   |=  [=wire =sign-arvo]
   ^-  (quip card _this)
   ?+  wire  (on-arvo:def wire sign-arvo)
