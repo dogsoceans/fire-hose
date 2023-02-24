@@ -1,6 +1,6 @@
 :: Usage: :outbox|bind /my-path
 ::
 :-  %say
-|=  [* [=path ~] ~]
+|=  [* [id=@ta daps=(list term) ~] ~]
 :-  %outbox-action
-[%bind path]
+[%make-outbox id daps]

@@ -21,7 +21,7 @@
 =*  state  -
 ::
 %-  agent:dbug
-%+  verb  |
+%+  verb  &
 ^-  agent:gall
 |_  =bowl:gall
 +*  this  .
@@ -60,7 +60,7 @@
     ?-    -.act
         %bind
       :_  this
-      [%pass /connect %arvo %e %connect `path.act dap.bowl]~
+      [%pass /bind %arvo %e %connect `path.act dap.bowl]~
     ::
         %deposit
       =.  outboxes
@@ -69,6 +69,12 @@
         ?.  (~(has in daps.outbox) dap.bowl)  outbox
         =/  index  ?~(msgs.outbox 0 +(-.i.msgs.outbox))
         [daps.outbox [[index json.act] msgs.outbox]]
+      `this
+    ::
+        :: TODO This is temporary. Do this by posting later
+        %make-outbox
+      =.  outboxes
+        (~(put by outboxes) id.act [(silt daps.act) ~])
       `this
     ==
   ::
@@ -104,7 +110,7 @@
           [%give %kick paths ~]
       ==
     ::
-        %'POST'
+        %'POST' :: TODO this doesn't work????? need to try from a browser or smth 
       =*  id=@ta  (crip (en-json:html s+(rear (rash url.request.req stap)))) :: TODO this is kind of retarded
       =/  connection-id=(unit octs)  `(as-octs:mimes:html id)
       =/  daps=(set term)  (silt (limo ~['test' 'asdf' 'fdsa'])) :: TODO implement for real
