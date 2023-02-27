@@ -2,5 +2,5 @@
 ::
 :-  %say
 |=  [* [id=@ta daps=(list term) ~] ~]
-:-  %outbox-action
-[%make-outbox id daps]
+:-  %fh-action
+[%make-hose id daps]

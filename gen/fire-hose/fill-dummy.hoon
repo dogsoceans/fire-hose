@@ -1,6 +1,6 @@
-:: Usage: :outbox|fill-dummy
+:: Usage: :fire-hose|fill-dummy
 ::
 :-  %say
 |=  [* ~ ~]
-:-  %outbox-action
+:-  %fh-action
 [%deposit %my-app [%s 'test']]

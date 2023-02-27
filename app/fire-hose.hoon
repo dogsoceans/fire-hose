@@ -1,18 +1,17 @@
-::  outbox [UQ| DAO]
+::  %fire-hose [UQ| DAO]
 ::
-::  UQ| outbox agent. Eliminates the need for .subscribe() connections
+::  UQ| fire-hose agent. Eliminates the need for .subscribe() connections
 ::  from the frontend. Use with <<NPM PACKAGE>>
 ::
-/-  *outbox
-/+  default-agent, dbug, verb, ob=outbox
+/-  *fire-hose
+/+  default-agent, dbug, verb, ob=fire-hose
 |%
 +$  versioned-state
   $%  state-0
   ==
 +$  state-0
   $:  %0
-      binding=path
-      outboxes=(map @ta outbox)
+      hoses=(map @ta hose)
   ==
 +$  card  card:agent:gall
 --
@@ -30,7 +29,7 @@
 ++  on-init
   ^-  (quip card _this)
   :_  this
-  [%pass /bind %arvo %e %connect `/outbox dap.bowl]~
+  [%pass /bind %arvo %e %connect `/fire-hose dap.bowl]~
 ::
 ++  on-save  !>(state)
 ::
@@ -53,33 +52,32 @@
   |=  [=mark =vase]
   ^-  (quip card _this)
   |^
-  ~&  >  mark
   ?+  mark  (on-poke:def mark vase)
-    %handle-http-request  (outbox-req bowl !<([@tas inbound-request:eyre] vase))
-    %outbox-action        (outbox-act bowl !<(outbox-action vase))
+    %handle-http-request  (fh-req bowl !<([@tas inbound-request:eyre] vase))
+    %fh-action            (fh-act bowl !<(fh-action vase))
   ==
   ::
-  ++  outbox-act
-    |=  [=bowl:gall act=outbox-action]
+  ++  fh-act
+    |=  [=bowl:gall act=fh-action]
     ^-  (quip card _this)
     ?-    -.act
         %deposit
-      =.  outboxes
-        %-  ~(urn by outboxes)
-        |=  [id=@ta =outbox]
-        ?.  (~(has in daps.outbox) dap.act)  outbox :: TODO need to write app source into bowl:gall, this is a security flaw right now
-        =/  index  ?~(msgs.outbox 0 +(-.i.msgs.outbox))
-        [time.outbox daps.outbox [[index json.act] msgs.outbox]]
+      =.  hoses
+        %-  ~(urn by hoses)
+        |=  [id=@ta =hose]
+        ?.  (~(has in daps.hose) dap.act)  hose :: TODO need to write app source into bowl:gall, this is a security flaw right now
+        =/  index  ?~(msgs.hose 0 +(-.i.msgs.hose))
+        [time.hose daps.hose [[index json.act] msgs.hose]]
       `this
     ::
         :: TODO This is temporary. Do this by POSTing later
-        %make-outbox
-      =.  outboxes
-        (~(put by outboxes) id.act [now.bowl (silt daps.act) ~])
+        %make-hose
+      =.  hoses
+        (~(put by hoses) id.act [now.bowl (silt daps.act) ~])
       `this
     ==
   ::
-  ++  outbox-req
+  ++  fh-req
     |=  [=bowl:gall rid=@tas req=inbound-request:eyre]
     ^-  (quip card _this)
     =/  paths  [/http-response/[rid]]~
@@ -87,10 +85,10 @@
       [200 ['Content-Type' 'application/json']~]
     ?>  =(%'GET' method.request.req)
     =/  parsed-url=path  (rash url.request.req stap) :: URL must be /[connection-id]/[ack-number]
-    ?>  ?=([%outbox @ @ ~] parsed-url)
+    ?>  ?=([%fh @ @ ~] parsed-url)
     =*  connection-id  i.t.parsed-url
     =/  message-id     (slav %ud i.t.t.parsed-url)
-    =/  current-ob=outbox  (~(got by outboxes) connection-id)
+    =/  current-ob=hose  (~(got by hoses) connection-id)
     =.  msgs.current-ob
       =|  new=(list [@ud json])
       |-
@@ -99,7 +97,7 @@
       $(msgs.current-ob t.msgs.current-ob, new [i.msgs.current-ob new])
     =.  time.current-ob  now.bowl
     :: TODO ugly code
-    :_  this(outboxes (~(put by outboxes) connection-id current-ob))
+    :_  this(hoses (~(put by hoses) connection-id current-ob))
     %^  make-http-response-facts:ob  paths  head
     %-  some
     %-  as-octs:mimes:html
