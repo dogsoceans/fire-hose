@@ -69,13 +69,13 @@
         |=  [id=@ta =outbox]
         ?.  (~(has in daps.outbox) dap.act)  outbox :: TODO need to write app source into bowl:gall, this is a security flaw right now
         =/  index  ?~(msgs.outbox 0 +(-.i.msgs.outbox))
-        [daps.outbox [[index json.act] msgs.outbox]]
+        [time.outbox daps.outbox [[index json.act] msgs.outbox]]
       `this
     ::
         :: TODO This is temporary. Do this by POSTing later
         %make-outbox
       =.  outboxes
-        (~(put by outboxes) id.act [(silt daps.act) ~])
+        (~(put by outboxes) id.act [now.bowl (silt daps.act) ~])
       `this
     ==
   ::
@@ -97,6 +97,7 @@
       ?~  msgs.current-ob                    (flop new)
       ?:  =(message-id -.i.msgs.current-ob)  (flop new)
       $(msgs.current-ob t.msgs.current-ob, new [i.msgs.current-ob new])
+    =.  time.current-ob  now.bowl
     :: TODO ugly code
     :_  this(outboxes (~(put by outboxes) connection-id current-ob))
     %^  make-http-response-facts:ob  paths  head
